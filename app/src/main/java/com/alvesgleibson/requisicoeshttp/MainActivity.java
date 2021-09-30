@@ -8,6 +8,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.alvesgleibson.requisicoeshttp.model.Endereco;
+import com.google.android.material.textfield.TextInputEditText;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -20,10 +23,12 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 
+
 public class MainActivity extends AppCompatActivity {
 
     private Button botaoRecuperar;
     private TextView txtResultado;
+    private TextInputEditText editText;
 
 
 
@@ -34,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
 
         botaoRecuperar = findViewById(R.id.btRecuperar);
         txtResultado = findViewById(R.id.txtResultado);
-
+        editText = findViewById(R.id.imputText);
 
 
         botaoRecuperar.setOnClickListener(new View.OnClickListener() {
@@ -42,8 +47,10 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 MyTask task = new MyTask();
-                String urlApi = "https://blockchain.info/ticker";
-                task.execute(urlApi);
+                String cep = editText.getText().toString();
+                //String urlApi = "https://blockchain.info/ticker";
+                String urlCEP = "https://viacep.com.br/ws/"+cep+"/json/";
+                task.execute(urlCEP);
 
             }
         });
@@ -94,11 +101,13 @@ public class MainActivity extends AppCompatActivity {
             super.onPostExecute(s);
 
 
-            String valorRealBit =  null;
-            String sifraoReal = null;
+            //String valorRealBit =  null;
+            //String sifraoReal = null;
+            Endereco endereco = null;
 
             try {
 
+                /*
                 String valorObjeto = null;
 
                 JSONObject jsonObject = new JSONObject(s);
@@ -107,12 +116,23 @@ public class MainActivity extends AppCompatActivity {
                 JSONObject jsonObjectReal = new JSONObject(valorObjeto);
                 valorRealBit = jsonObjectReal.getString("last");
                 sifraoReal = jsonObjectReal.getString("symbol") + " "+ valorRealBit;
+                */
+
+
+                JSONObject jsonObject = new JSONObject(s);
+                String rua, cep, bairro,uf, cidade;
+                rua = jsonObject.getString("logradouro");
+                cep = jsonObject.getString("cep");
+                bairro = jsonObject.getString("bairro");
+                uf = jsonObject.getString("uf");
+                cidade = jsonObject.getString("localidade");
+                endereco = new Endereco(rua,cep,bairro,uf, cidade);
 
 
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            txtResultado.setText(sifraoReal);
+            txtResultado.setText(endereco.toString());
         }
     }
 }
