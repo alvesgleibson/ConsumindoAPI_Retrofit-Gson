@@ -52,18 +52,38 @@ public class MainActivity extends AppCompatActivity {
                 .build();
 
 
-        botaoRecuperar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
 
-                recuperarPostagemRetrofit();
+        botaoRecuperar.setOnClickListener(v -> salvarPostagem());
+
+    }
+
+    private void salvarPostagem() {
+        DataService service = retrofit.create(DataService.class);
+        Call<Postagem> call = service.salvarPostagem( new Postagem(1005, "Teste Titulo", "Teste Corpo"));
+
+        call.enqueue(new Callback<Postagem>() {
+            @Override
+            public void onResponse(Call<Postagem> call, Response<Postagem> response) {
+
+                if (response.isSuccessful()){
+
+                    Postagem postagem = response.body();
+                    txtResultado.setText(postagem.toString()+" \n\nCodigo: "+response.code());
+
+                }
+
+
+            }
+
+            @Override
+            public void onFailure(Call<Postagem> call, Throwable t) {
 
             }
         });
 
     }
 
-    public void recuperarCEPRetrofit(){
+    private void recuperarCEPRetrofit(){
 
         editText = findViewById(R.id.imputText);
         String CEP = editText.getText().toString();
@@ -76,7 +96,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<Endereco> call, Response<Endereco> response) {
 
-                txtResultado.setText(response.body().toString());
+                if (response.isSuccessful()){
+                    txtResultado.setText(response.body().toString());
+                }
+
 
             }
 
@@ -88,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void recuperarFotosRetrofit(){
+    private void recuperarFotosRetrofit(){
 
         DataService service = retrofit.create(DataService.class);
         Call<List<ListaFoto>> call = service.recuperarFotos();
@@ -98,12 +121,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<List<ListaFoto>> call, Response<List<ListaFoto>> response) {
 
-                //Lista já setada(Muito pratico)
-                listaFotos = response.body();
+                if (response.isSuccessful()){
+                    //Lista já setada(Muito pratico)
+                    listaFotos = response.body();
 
-                for (int i =0; i < listaFotos.size(); i++){
-                    Log.d("FotosAPI", "FotosRetrofit: "+listaFotos.get( i ));
+                    for (int i =0; i < listaFotos.size(); i++){
+                        Log.d("FotosAPI", "FotosRetrofit: "+listaFotos.get( i ));
+                    }
                 }
+
 
             }
 
@@ -115,22 +141,23 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void recuperarPostagemRetrofit(){
+    private void recuperarPostagemRetrofit(){
         DataService service = retrofit.create(DataService.class);
         Call<List<Postagem>> call = service.recuperarPostagem();
 
         call.enqueue(new Callback<List<Postagem>>() {
             @Override
             public void onResponse(Call<List<Postagem>> call, Response<List<Postagem>> response) {
-                listaPostagens = response.body();
 
-                for (int i =0; i< listaPostagens.size(); i++){
+                if (response.isSuccessful()){
+                    listaPostagens = response.body();
 
-                    Log.d(" Postagem ", "ListaPostagens: "+listaPostagens.get( i ));
+                    for (int i =0; i< listaPostagens.size(); i++){
 
+                        Log.d(" Postagem ", "ListaPostagens: "+listaPostagens.get( i ));
+
+                    }
                 }
-
-
             }
 
             @Override

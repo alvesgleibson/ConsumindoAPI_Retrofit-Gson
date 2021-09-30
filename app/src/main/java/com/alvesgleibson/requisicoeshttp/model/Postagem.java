@@ -5,9 +5,8 @@ public class Postagem {
     private Integer userId, id;
     private String title, body;
 
-    public Postagem(Integer userId, Integer id, String title, String body) {
+    public Postagem(Integer userId, String title, String body) {
         this.userId = userId;
-        this.id = id;
         this.title = title;
         this.body = body;
     }
