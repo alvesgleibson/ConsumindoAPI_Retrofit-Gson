@@ -2,17 +2,22 @@ package com.alvesgleibson.requisicoeshttp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
 
 import com.alvesgleibson.requisicoeshttp.api.CEPService;
+import com.alvesgleibson.requisicoeshttp.api.DataService;
 import com.alvesgleibson.requisicoeshttp.model.Endereco;
+import com.alvesgleibson.requisicoeshttp.model.ListaFoto;
 import com.google.android.material.textfield.TextInputEditText;
 
+
+import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -27,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView txtResultado;
     private TextInputEditText editText;
     private Retrofit retrofit;
-
+    private List<ListaFoto> listaFotos = new ArrayList<>();
 
 
     @Override
@@ -40,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         retrofit = new Retrofit.Builder()
-                .baseUrl("https://viacep.com.br/ws/")
+                .baseUrl("https://jsonplaceholder.typicode.com")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -49,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                recuperarCEPRetrofit();
+                recuperarFotosRetrofit();
 
             }
         });
@@ -75,6 +80,33 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<Endereco> call, Throwable t) {
+
+            }
+        });
+
+    }
+
+    public void recuperarFotosRetrofit(){
+
+        DataService service = retrofit.create(DataService.class);
+        Call<List<ListaFoto>> call = service.recuperarFotos();
+
+        call.enqueue(new Callback<List<ListaFoto>>() {
+
+            @Override
+            public void onResponse(Call<List<ListaFoto>> call, Response<List<ListaFoto>> response) {
+
+                //Lista já setada(Muito pratico)
+                listaFotos = response.body();
+
+                for (int i =0; i < listaFotos.size(); i++){
+                    Log.d("FotosAPI", "FotosRetrofit: "+listaFotos.get( i ));
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<List<ListaFoto>> call, Throwable t) {
 
             }
         });
