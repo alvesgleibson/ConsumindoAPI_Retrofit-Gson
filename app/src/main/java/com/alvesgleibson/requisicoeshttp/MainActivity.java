@@ -59,7 +59,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void salvarPostagem() {
         DataService service = retrofit.create(DataService.class);
-        Call<Postagem> call = service.salvarPostagem( new Postagem(1005, "Teste Titulo", "Teste Corpo"));
+
+        Call<Postagem> call = service.salvarPostagem( 1005, "Teste Titulo", "Teste Corpo");
 
         call.enqueue(new Callback<Postagem>() {
             @Override
