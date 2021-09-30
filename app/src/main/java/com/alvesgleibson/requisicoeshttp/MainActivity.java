@@ -13,6 +13,7 @@ import com.alvesgleibson.requisicoeshttp.api.CEPService;
 import com.alvesgleibson.requisicoeshttp.api.DataService;
 import com.alvesgleibson.requisicoeshttp.model.Endereco;
 import com.alvesgleibson.requisicoeshttp.model.ListaFoto;
+import com.alvesgleibson.requisicoeshttp.model.Postagem;
 import com.google.android.material.textfield.TextInputEditText;
 
 
@@ -33,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private TextInputEditText editText;
     private Retrofit retrofit;
     private List<ListaFoto> listaFotos = new ArrayList<>();
+    private List<Postagem> listaPostagens = new ArrayList<>();
 
 
     @Override
@@ -54,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                recuperarFotosRetrofit();
+                recuperarPostagemRetrofit();
 
             }
         });
@@ -110,6 +112,33 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+    }
+
+    public void recuperarPostagemRetrofit(){
+        DataService service = retrofit.create(DataService.class);
+        Call<List<Postagem>> call = service.recuperarPostagem();
+
+        call.enqueue(new Callback<List<Postagem>>() {
+            @Override
+            public void onResponse(Call<List<Postagem>> call, Response<List<Postagem>> response) {
+                listaPostagens = response.body();
+
+                for (int i =0; i< listaPostagens.size(); i++){
+
+                    Log.d(" Postagem ", "ListaPostagens: "+listaPostagens.get( i ));
+
+                }
+
+
+            }
+
+            @Override
+            public void onFailure(Call<List<Postagem>> call, Throwable t) {
+
+            }
+        });
+
 
     }
 
