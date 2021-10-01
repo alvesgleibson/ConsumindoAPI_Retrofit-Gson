@@ -11,6 +11,8 @@ import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
+import retrofit2.http.Path;
 
 public interface DataService {
 
@@ -20,9 +22,11 @@ public interface DataService {
     @GET("/posts")
     Call<List<Postagem>>recuperarPostagem();
 
+    //Salvar Postagem usando JSON
     @POST("/posts")
     Call<Postagem>salvarPostagem(@Body Postagem postagem);
 
+    //Salvar Postagem usando XML
     @FormUrlEncoded
     @POST("/posts")
     Call<Postagem>salvarPostagem(
@@ -30,5 +34,9 @@ public interface DataService {
             @Field("title") String title,
             @Field("body") String body
     );
+
+    //Atualizar Postagem
+    @PUT("/posts/{id}")
+    Call<Postagem> atualizarPostagem(@Path("id") int id, @Body Postagem postagem);
 
 }

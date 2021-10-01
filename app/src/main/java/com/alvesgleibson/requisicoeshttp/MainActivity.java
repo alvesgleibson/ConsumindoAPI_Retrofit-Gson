@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private Retrofit retrofit;
     private List<ListaFoto> listaFotos = new ArrayList<>();
     private List<Postagem> listaPostagens = new ArrayList<>();
-
+    private DataService service;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,19 +46,42 @@ public class MainActivity extends AppCompatActivity {
         txtResultado = findViewById(R.id.txtResultado);
 
 
+
         retrofit = new Retrofit.Builder()
                 .baseUrl("https://jsonplaceholder.typicode.com")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
+        service = retrofit.create(DataService.class);
 
-
-        botaoRecuperar.setOnClickListener(v -> salvarPostagem());
+        botaoRecuperar.setOnClickListener(v -> atualizarPostagem());
 
     }
 
+    private void atualizarPostagem() {
+
+        Call<Postagem> call = service.atualizarPostagem(1, new Postagem(698, "Atualizado Titulo", null));
+
+        call.enqueue(new Callback<Postagem>() {
+            @Override
+            public void onResponse(Call<Postagem> call, Response<Postagem> response) {
+                if (response.isSuccessful()){
+
+                    txtResultado.setText(response.body().toString()+" \n\nCodigo: "+response.code());
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Postagem> call, Throwable t) {
+
+            }
+        });
+
+    }
+
+
     private void salvarPostagem() {
-        DataService service = retrofit.create(DataService.class);
 
         Call<Postagem> call = service.salvarPostagem( 1005, "Teste Titulo", "Teste Corpo");
 
@@ -67,18 +90,13 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(Call<Postagem> call, Response<Postagem> response) {
 
                 if (response.isSuccessful()){
-
                     Postagem postagem = response.body();
                     txtResultado.setText(postagem.toString()+" \n\nCodigo: "+response.code());
-
                 }
-
-
             }
 
             @Override
             public void onFailure(Call<Postagem> call, Throwable t) {
-
             }
         });
 
@@ -114,7 +132,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void recuperarFotosRetrofit(){
 
-        DataService service = retrofit.create(DataService.class);
         Call<List<ListaFoto>> call = service.recuperarFotos();
 
         call.enqueue(new Callback<List<ListaFoto>>() {
@@ -130,8 +147,6 @@ public class MainActivity extends AppCompatActivity {
                         Log.d("FotosAPI", "FotosRetrofit: "+listaFotos.get( i ));
                     }
                 }
-
-
             }
 
             @Override
@@ -143,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void recuperarPostagemRetrofit(){
-        DataService service = retrofit.create(DataService.class);
+
         Call<List<Postagem>> call = service.recuperarPostagem();
 
         call.enqueue(new Callback<List<Postagem>>() {
