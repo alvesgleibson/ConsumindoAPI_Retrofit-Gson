@@ -54,7 +54,28 @@ public class MainActivity extends AppCompatActivity {
 
         service = retrofit.create(DataService.class);
 
-        botaoRecuperar.setOnClickListener(v -> atualizarPostagem());
+        botaoRecuperar.setOnClickListener(v -> atualizarPostagemPATH());
+
+    }
+
+    private void atualizarPostagemPATH() {
+
+        Call<Postagem> call = service.atualizarPostagemPATH(1, new Postagem(698, "Atualizado Titulo", null));
+        call.enqueue(new Callback<Postagem>() {
+            @Override
+            public void onResponse(Call<Postagem> call, Response<Postagem> response) {
+
+                if (response.isSuccessful()){
+                    txtResultado.setText(response.body().toString());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Postagem> call, Throwable t) {
+
+            }
+        });
+
 
     }
 
