@@ -87,12 +87,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<Postagem> call, Response<Postagem> response) {
                 if (response.isSuccessful()){
-
                     txtResultado.setText(response.body().toString()+" \n\nCodigo: "+response.code());
-
                 }
             }
-
             @Override
             public void onFailure(Call<Postagem> call, Throwable t) {
 
